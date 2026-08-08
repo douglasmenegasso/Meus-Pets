@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#ff8fb1"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Meus Pets</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Comic Sans MS","Comic Sans",cursive;background:linear-gradient(160deg,#ffd6e8 0%,#fff6b8 30%,#c9f2dc 55%,#cfe8ff 78%,#e7d7ff 100%);touch-action:manipulation}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;overflow-y:auto;padding:12px}
+.screen.active{display:flex}
+.act{padding-top:70px}
+.title{font-size:2em;font-weight:bold;margin:6px 0 12px;text-align:center}
+.title span{text-shadow:2px 2px 0 #fff,-2px 2px 0 #fff,2px -2px 0 #fff,-2px -2px 0 #fff}
+.homebtn{position:absolute;top:12px;left:12px;font-size:1.4em;border:3px solid #fff;border-radius:50%;width:54px;height:54px;background:#ff9d5c;z-index:50;cursor:pointer}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:430px;padding:6px}
+.btn{border:4px solid #fff;border-radius:22px;padding:14px 8px;font-family:inherit;font-size:1.15em;font-weight:bold;color:#444;box-shadow:0 5px 0 rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.btn:active{transform:scale(.93)}
+.btn .e{font-size:1.6em}
+.pets{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:470px}
+.pet{background:#fff;border:4px solid #ffd23e;border-radius:20px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;font-family:inherit;font-weight:bold;color:#666;font-size:1em;cursor:pointer}
+.pet .e{font-size:3em}
+.pet:active{transform:scale(.93)}
+.scene{position:relative;width:min(92vw,430px);height:44vh;background:rgba(255,255,255,.55);border-radius:24px;border:4px solid #fff;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:background 1s}
+.scene.dark{background:#31406e}
+.petbig{font-size:6em;z-index:2}
+.fx{position:absolute;font-size:2em;pointer-events:none;z-index:6;animation:float 1.2s ease-out forwards}
+@keyframes float{from{transform:translateY(0) scale(.6);opacity:1}to{transform:translateY(-80px)scale(1.4);opacity:0}}
+.dirt{position:absolute;width:20px;height:15px;background:#8a5a3b;border-radius:50%;z-index:3}
+.foam{position:absolute;bottom:16%;width:72%;height:16%;background:#fff;border-radius:30px;display:none;z-index:3}
+.blanket{position:absolute;bottom:14%;width:64%;height:24%;background:repeating-linear-gradient(45deg,#ff8fb1 0 12px,#ffc2d6 12px 24px);border-radius:16px;display:none;z-index:4}
+#cukes{position:absolute;top:36%;left:50%;transform:translateX(-50%);font-size:1.8em;display:none;z-index:5;letter-spacing:14px}
+.tools{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.tool{font-size:1.05em;padding:12px 16px;border-radius:18px;border:4px solid #fff;background:#e5e5e5;font-family:inherit;font-weight:bold;color:#555;box-shadow:0 4px 0 rgba(0,0,0,.2);cursor:pointer}
+.tool:active{transform:scale(.93)}
+.tool.on{background:#ffe066;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.wig{animation:wig .3s}
+@keyframes wig{25%{transform:rotate(4deg)}75%{transform:rotate(-4deg)}}
+.hop{animation:hop .7s}
+@keyframes hop{30%{transform:translateY(-25px) scale(1.1)}60%{transform:translateY(0)}}
+.pal{width:48px;height:48px;border-radius:50%;border:4px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);cursor:pointer}
+.pal.sel{outline:4px solid #333}
+.palette{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+#svgcolor{width:min(88vw,400px);background:#fff;border-radius:18px;border:4px solid #fff}
+.part{cursor:pointer}
+.canvaswrap{flex:1;width:min(94vw,520px);background:#fff;border-radius:18px;border:4px solid #fff;overflow:hidden;margin-top:8px}
+#cv{width:100%;height:100%;display:block;touch-action:none}
+#bubble{position:fixed;top:18%;left:50%;transform:translateX(-50%);background:#fff;border:4px solid #ffd23e;border-radius:20px;padding:10px 26px;font-size:1.6em;font-weight:bold;color:#e75480;display:none;z-index:60}
+#yay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:99}
+#yay.show{display:flex}
+.yaybox{background:#fff;border-radius:28px;padding:26px 40px;text-align:center;border:5px solid #ffd23e}
+.yaye{font-size:4em;animation:hop 1s infinite}
+#yaymsg{font-size:1.4em;color:#e75480;font-weight:bold;margin:8px 0 16px}
+#lgwrap{width:min(92vw,420px)}
+#lgwrap svg{width:100%;background:#fff;border-radius:18px;border:4px solid #fff}
+.lgdot{cursor:pointer}
+.small{font-size:.95em;padding:8px 18px;margin-top:10px;background:#cfe8ff}
+</style>
+</head>
+<body>
+<div id="bubble"></div>
+
+<!-- ESCOLHER PET -->
+<div class="screen active" id="scr-pets">
+<h1 class="title">ESCOLHA SEU PET</h1>
+<div class="pets" id="petsgrid"></div>
+</div>
+
+<!-- MENU -->
+<div class="screen" id="scr-menu">
+<h1 class="title">MEUS PETS</h1>
+<div style="font-size:4em" id="menuPet">🐶</div>
+<div style="font-size:1.2em;font-weight:bold;color:#777" id="menuName">Cachorro</div>
+<div class="grid" style="margin-top:12px">
+<button class="btn" style="background:#9adcf7" onclick="go('scr-banho')"><span class="e">🛁</span>BANHO</button>
+<button class="btn" style="background:#d9c6f7" onclick="go('scr-spa')"><span class="e">🌸</span>SPA</button>
+<button class="btn" style="background:#b8a7ea" onclick="go('scr-dormir')"><span class="e">🌙</span>DORMIR</button>
+<button class="btn" style="background:#f7a8b8" onclick="go('scr-colorir')"><span class="e">🎨</span>COLORIR</button>
+<button class="btn" style="background:#ffe08a" onclick="go('scr-desenhar')"><span class="e">✏️</span>DESENHAR</button>
+<button class="btn" style="background:#ffb26b" onclick="go('scr-sons')"><span class="e">🎵</span>SONS</button>
+<button class="btn" style="background:#a7e8a0;grid-column:1/3" onclick="go('scr-liga')"><span class="e">🔢</span>LIGA PONTOS</button>
+</div>
+<button class="btn small" onclick="show('scr-pets')">🔄 Trocar pet</button>
+</div>
+
+<!-- BANHO -->
+<div class="screen act" id="scr-banho">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">BANHO</h1>
+<div class="scene" id="sc-banho">
+<div class="petbig" id="p-banho">🐶</div>
+<div class="dirt" style="left:42%;top:42%"></div>
+<div class="dirt" style="left:56%;top:60%"></div>
+<div class="dirt" style="left:38%;top:66%"></div>
+<div class="foam" id="foam"></div>
+</div>
+<div class="tools">
+<button class="tool" id="t-soap">🧽 Esponja</button>
+<button class="tool" id="t-rinse">🚿 Enxaguar</button>
+<button class="tool" id="t-dry">💨 Secar</button>
+</div>
+</div>
+
+<!-- SPA -->
+<div class="screen act" id="scr-spa">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">SPA</h1>
+<div class="scene" id="sc-spa">
+<div class="petbig" id="p-spa">🐶</div>
+<div id="cukes">🥒🥒</div>
+</div>
+<div class="tools">
+<button class="tool" id="s-cuke">🥒 Pepino</button>
+<button class="tool" id="s-cream">🧴 Creminho</button>
+<button class="tool" id="s-mass">💆 Massagem</button>
+</div>
+</div>
+
+<!-- DORMIR -->
+<div class="screen act" id="scr-dormir">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">DORMIR</h1>
+<div class="scene" id="sc-dormir">
+<div class="petbig" id="p-dor">🐶</div>
+<div class="blanket" id="blanket"></div>
+</div>
+<div class="tools">
+<button class="tool" id="d-blank">🛏️ Cobrir</button>
+<button class="tool" id="d-moon">🌙 Apagar luz</button>
+<button class="tool" id="d-star">⭐ Sonhar</button>
+</div>
+</div>
+
+<!-- COLORIR -->
+<div class="screen act" id="scr-colorir">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">COLORIR</h1>
+<svg id="svgcolor" viewBox="0 0 200 190">
+<g stroke="#777" stroke-width="3" fill="#fff">
+<ellipse class="part" cx="168" cy="120" rx="13" ry="30" transform="rotate(35 168 120)"/>
+<ellipse class="part" cx="118" cy="138" rx="55" ry="42"/>
+<ellipse class="part" cx="118" cy="150" rx="26" ry="20"/>
+<ellipse class="part" cx="52" cy="42" rx="13" ry="24" transform="rotate(-18 52 42)"/>
+<ellipse class="part" cx="108" cy="42" rx="13" ry="24" transform="rotate(18 108 42)"/>
+<circle class="part" cx="80" cy="78" r="44"/>
+</g>
+<circle cx="66" cy="70" r="5" fill="#333"/><circle cx="94" cy="70" r="5" fill="#333"/>
+<circle cx="80" cy="86" r="6" fill="#e77"/>
+<path d="M70 96 q10 8 20 0" stroke="#333" fill="none" stroke-width="3" stroke-linecap="round"/>
+</svg>
+<div class="palette" id="palette"></div>
+</div>
+
+<!-- DESENHAR -->
+<div class="screen act" id="scr-desenhar">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">DESENHAR</h1>
+<div class="canvaswrap"><canvas id="cv"></canvas></div>
+<div class="tools" id="dtools"></div>
+<div class="tools">
+<button class="tool" data-t="circle">⭕</button>
+<button class="tool" data-t="star">⭐</button>
+<button class="tool" data-t="heart">❤️</button>
+<button class="tool" data-t="">✖ Modelo</button>
+<button class="tool" id="d-clear">🧼 Limpar</button>
+</div>
+</div>
+
+<!-- SONS -->
+<div class="screen act" id="scr-sons">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">SONS DOS BICHOS</h1>
+<div class="pets" id="songrid"></div>
+</div>
+
+<!-- LIGA PONTOS -->
+<div class="screen act" id="scr-liga">
+<button class="homebtn" onclick="go('scr-menu')">🏠</button>
+<h1 class="title">LIGA PONTOS</h1>
+<div id="lgwrap"></div>
+<button class="btn small" id="lgnext">➡️ Próximo desenho</button>
+</div>
+
+<div id="yay"><div class="yaybox"><div class="yaye">🎉</div><p id="yaymsg">Muito bem!</p><button class="btn" style="background:#7ed957" onclick="hideYay()">Continuar ▶</button></div></div>
+
+<script>
+var $=function(id){return document.getElementById(id)};
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});$(id).classList.add('active')}
+function go(id){show(id);
+if(id==='scr-banho')banhoReset();
+if(id==='scr-spa')spaReset();
+if(id==='scr-dormir')dormirReset();
+if(id==='scr-colorir')colorReset();
+if(id==='scr-desenhar')requestAnimationFrame(sizeCv);
+if(id==='scr-liga')lgLoad(lgIdx);}
+/* ===== SOM ===== */
+var AC;function ac(){AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type,t){d=d||.15;type=type||'sine';t=t||0;var a=ac(),o=a.createOscillator(),g=a.createGain(),n=a.currentTime+t;o.type=type;o.frequency.value=f;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(.3,n+.02);g.gain.exponentialRampToValueAtTime(.001,n+d);o.start(n);o.stop(n+d+.05)}
+function sweep(f1,f2,d,type,t){var a=ac(),o=a.createOscillator(),g=a.createGain(),n=a.currentTime+(t||0);o.type=type||'sine';o.frequency.setValueAtTime(f1,n);o.frequency.linearRampToValueAtTime(f2,n+d);o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.3,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.start(n);o.stop(n+d+.05)}
+function pop(){tone(600,.08,'triangle')}
+function cheer(){[523,659,784,1047].forEach(function(f,i){tone(f,.2,'triangle',i*.12)})}
+function wrong(id){var b=$(id);b.classList.remove('wig');void b.offsetWidth;b.classList.add('wig');tone(200,.15)}
+function animalSound(i){
+if(i===0){sweep(350,180,.15,'square');sweep(300,150,.18,'square',.2)}
+if(i===1){sweep(500,900,.25,'sawtooth');sweep(900,400,.3,'sawtooth',.28)}
+if(i===2){tone(900,.06);tone(1100,.06,'sine',.12)}
+if(i===3){sweep(1200,1800,.1);sweep(1400,2000,.1,'sine',.15)}
+if(i===4){sweep(1000,1500,.1,'square');sweep(1500,800,.15,'square',.15)}
+if(i===5){sweep(220,120,.5)}}
+/* ===== PETS ===== */
+var PETS=[{e:'🐶',n:'Cachorro'},{e:'🐱',n:'Gato'},{e:'🐰',n:'Coelho'},{e:'🐹',n:'Hamster'},{e:'🦜',n:'Papagaio'},{e:'🐢',n:'Tartaruga'}];
+var ONS=['Au! Au!','Miau!','Pum-pum!','Squec!','Loro! Loro!','Bem devagar...'];
+var pet=0;
+PETS.forEach(function(p,i){var b=document.createElement('button');b.className='pet';b.innerHTML='<span class="e">'+p.e+'</span>'+p.n;
+b.onclick=function(){pet=i;pop();$('menuPet').textContent=p.e;$('menuName').textContent=p.n;go('scr-menu')};$('petsgrid').appendChild(b);
+var s=document.createElement('button');s.className='pet';s.innerHTML='<span class="e">'+p.e+'</span>'+p.n;
+s.onclick=function(){animalSound(i);s.classList.remove('hop');void s.offsetWidth;s.classList.add('hop');var bb=$('bubble');bb.textContent=ONS[i];bb.style.display='block';clearTimeout(bb.t);bb.t=setTimeout(function(){bb.style.display='none'},1200)};$('songrid').appendChild(s);});
+/* ===== TÍTULO COLORIDO ===== */
+var cols=['#ff5d8f','#ff9f1c','#2ec4b6','#3a86ff','#b5179e'];
+document.querySelectorAll('.title').forEach(function(t){var txt=t.textContent;t.textContent='';txt.split('').forEach(function(ch,i){var sp=document.createElement('span');sp.textContent=ch;sp.style.color=cols[i%cols.length];t.appendChild(sp)})});
+/* ===== UTILIDADES ===== */
+function fx(scene,emoji,x,y){var s=document.createElement('span');s.className='fx';s.textContent=emoji;s.style.left=x+'%';s.style.top=y+'%';scene.appendChild(s);setTimeout(function(){s.remove()},1200)}
+function hop(el){el.classList.remove('hop');void el.offsetWidth;el.classList.add('hop')}
+function setOn(id){document.querySelectorAll('.tool').forEach(function(t){t.classList.remove('on')});if(id)$(id).classList.add('on')}
+function yay(msg){$('yaymsg').textContent=msg||'Muito bem!';$('yay').classList.add('show');cheer()}
+function hideYay(){$('yay').classList.remove('show')}
+/* ===== BANHO ===== */
+var bStep=0;
+function banhoReset(){bStep=0;$('p-banho').textContent=PETS[pet].e;$('foam').style.display='none';document.querySelectorAll('#sc-banho .dirt').forEach(function(d){d.style.display='block'});setOn('t-soap')}
+$('t-soap').onclick=function(){if(bStep!==0)return wrong('t-soap');bStep=1;document.querySelectorAll('#sc-banho .dirt').forEach(function(d){d.style.display='none'});$('foam').style.display='block';for(var i=0;i<4;i++)fx($('sc-banho'),'🧼',20+i*18,28+(i%2)*10);pop();setOn('t-rinse')};
+$('t-rinse').onclick=function(){if(bStep!==1)return wrong('t-rinse');bStep=2;$('foam').style.display='none';for(var i=0;i<4;i++)fx($('sc-banho'),'💦',20+i*18,24+(i%2)*12);pop();setOn('t-dry')};
+$('t-dry').onclick=function(){if(bStep!==2)return wrong('t-dry');bStep=3;for(var i=0;i<5;i++)fx($('sc-banho'),'✨',15+i*16,20+(i%3)*14);hop($('p-banho'));setOn(null);yay('Que banho delicioso!')};
+/* ===== SPA ===== */
+var sStep=0;
+function spaReset(){sStep=0;$('p-spa').textContent=PETS[pet].e;$('cukes').style.display='none';setOn('s-cuke')}
+$('s-cuke').onclick=function(){if(sStep!==0)return wrong('s-cuke');sStep=1;$('cukes').style.display='block';pop();setOn('s-cream')};
+$('s-cream').onclick=function(){if(sStep!==1)return wrong('s-cream');sStep=2;for(var i=0;i<4;i++)fx($('sc-spa'),'🧴',20+i*18,30+(i%2)*10);pop();setOn('s-mass')};
+$('s-mass').onclick=function(){if(sStep!==2)return wrong('s-mass');sStep=3;for(var i=0;i<5;i++)fx($('sc-spa'),'💗',15+i*16,25+(i%3)*12);hop($('p-spa'));setOn(null);yay('Que spa relaxante!')};
+/* ===== DORMIR ===== */
+var dStep=0;
+function dormirReset(){dStep=0;$('p-dor').textContent=PETS[pet].e;$('sc-dormir').classList.remove('dark');$('blanket').style.display='none';setOn('d-blank')}
+$('d-blank').onclick=function(){if(dStep!==0)return wrong('d-blank');dStep=1;$('blanket').style.display='block';pop();setOn('d-moon')};
+$('d-moon').onclick=function(){if(dStep!==1)return wrong('d-moon');dStep=2;$('sc-dormir').classList.add('dark');pop();setOn('d-star')};
+$('d-star').onclick=function(){if(dStep!==2)return wrong('d-star');dStep=3;for(var i=0;i<4;i++)fx($('sc-dormir'),'⭐',15+i*20,15+(i%2)*10);for(var j=0;j<3;j++)fx($('sc-dormir'),'💤',45+j*8,30+j*8);tone(400,.4);tone(300,.5,'sine',.4);setOn(null);yay('Boa noite, docinho!')};
+/* ===== COLORIR ===== */
+var curCol='#e63946';
+['#e63946','#1d7fe0','#ffcc00','#2a9d3a','#f472b6','#8338ec','#ff7b00'].forEach(function(c,i){var b=document.createElement('button');b.className='pal'+(i===0?' sel':'');b.style.background=c;b.onclick=function(){curCol=c;document.querySelectorAll('.pal').forEach(function(x){x.classList.remove('sel')});b.classList.add('sel');pop()};$('palette').appendChild(b)});
+function colorReset(){document.querySelectorAll('#svgcolor .part').forEach(function(p){p.setAttribute('fill','#ffffff')})}
+document.querySelectorAll('#svgcolor .part').forEach(function(p){p.addEventListener('pointerdown',function(){p.setAttribute('fill',curCol);pop();var done=true;document.querySelectorAll('#svgcolor .part').forEach(function(q){if(q.getAttribute('fill')==='#ffffff')done=false});if(done)yay('Que desenho lindo!')})});
+/* ===== DESENHAR ===== */
+var cv=$('cv'),ctx=cv.getContext('2d'),drawing=false,curColor='#e63946',trace=null,strokes=[],cur=null;
+['#e63946','#1d7fe0','#ffcc00','#2a9d3a','#f472b6','#333'].forEach(function(c,i){var b=document.createElement('button');b.className='pal'+(i===0?' sel':'');b.style.background=c;b.onclick=function(){curColor=c;document.querySelectorAll('#dtools .pal').forEach(function(x){x.classList.remove('sel')});b.classList.add('sel');pop()};$('dtools').appendChild(b)});
+function sizeCv(){cv.width=cv.clientWidth;cv.height=cv.clientHeight;redraw()}
+window.addEventListener('resize',sizeCv);
+function pt(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function seg(s,i){ctx.strokeStyle=s.color;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(s.pts[i].x,s.pts[i].y);ctx.lineTo(s.pts[i+1].x,s.pts[i+1].y);ctx.stroke()}
+function tracePts(kind){var w=cv.width,h=cv.height,cx=w/2,cy=h/2,R=Math.min(w,h)*.35,P=[];
+if(kind==='circle'){for(var i=0;i<24;i++){var a=i/24*Math.PI*2;P.push({x:cx+R*Math.cos(a),y:cy+R*Math.sin(a)})}}
+if(kind==='star'){[[100,15],[125,75],[190,80],[140,120],[158,185],[100,148],[42,185],[60,120],[10,80],[75,75]].forEach(function(p){P.push({x:p[0]/200*w,y:p[1]/200*h})})}
+if(kind==='heart'){for(var j=0;j<=24;j++){var t=j/24*Math.PI*2,x=16*Math.pow(Math.sin(t),3),y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);P.push({x:cx+x*R/16,y:cy-y*R/16})}}
+return P}
+function redraw(){ctx.clearRect(0,0,cv.width,cv.height);
+if(trace){var P=tracePts(trace);ctx.save();ctx.strokeStyle='#bbb';ctx.lineWidth=3;ctx.setLineDash([10,10]);ctx.beginPath();P.forEach(function(p,i){i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)});ctx.closePath();ctx.stroke();ctx.restore()}
+strokes.forEach(function(s){for(var i=0;i<s.pts.length-1;i++)seg(s,i)})}
+cv.addEventListener('pointerdown',function(e){drawing=true;var p=pt(e);cur={color:curColor,pts:[p,p]};strokes.push(cur);cv.setPointerCapture(e.pointerId);seg(cur,0)});
+cv.addEventListener('pointermove',function(e){if(!drawing)return;cur.pts.push(pt(e));seg(cur,cur.pts.length-2)});
+cv.addEventListener('pointerup',function(){drawing=false});
+document.querySelectorAll('[data-t]').forEach(function(b){b.onclick=function(){trace=b.dataset.t||null;redraw();pop()}});
+$('d-clear').onclick=function(){strokes=[];redraw();pop()};
+/* ===== LIGA PONTOS ===== */
+var LG=[{n:'Triângulo',pts:[[100,30],[170,160],[30,160]]},{n:'Quadrado',pts:[[40,40],[160,40],[160,160],[40,160]]},{n:'Estrela',pts:[[100,15],[125,75],[190,80],[140,120],[158,185],[100,148],[42,185],[60,120],[10,80],[75,75]]}];
+var lgIdx=0,lgNext=0;
+function lgLoad(i){lgIdx=i%LG.length;lgNext=0;var s=LG[lgIdx],h='<svg viewBox="0 0 200 200" id="lgsvg"><polygon id="lgpoly" points="'+s.pts.map(function(p){return p.join(',')}).join(' ')+'" fill="rgba(255,224,102,.6)" visibility="hidden"/>';
+s.pts.forEach(function(p,n){h+='<circle class="lgdot" data-n="'+n+'" cx="'+p[0]+'" cy="'+p[1]+'" r="11" fill="#ff8fb1" stroke="#fff" stroke-width="3"/><text x="'+p[0]+'" y="'+(p[1]+5)+'" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" pointer-events="none">'+(n+1)+'</text>'});
+h+='</svg>';$('lgwrap').innerHTML=h;
+document.querySelectorAll('.lgdot').forEach(function(d){d.addEventListener('pointerdown',lgTap)})}
+function lgTap(e){var n=+e.target.dataset.n;
+if(n!==lgNext){e.target.setAttribute('fill','#ff5d5d');setTimeout(function(){e.target.setAttribute('fill','#ff8fb1')},300);tone(200,.15);return}
+e.target.setAttribute('fill','#7ed957');var svg=$('lgsvg'),pl=$('lgline');
+if(!pl){pl=document.createElementNS('http://www.w3.org/2000/svg','polyline');pl.id='lgline';pl.setAttribute('stroke','#7a4b2a');pl.setAttribute('stroke-width','5');pl.setAttribute('fill','none');pl.setAttribute('stroke-linecap','round');svg.appendChild(pl)}
+var p=LG[lgIdx].pts[n],pts=pl.getAttribute('points');pl.setAttribute('points',pts?pts+' '+p[0]+','+p[1]:p[0]+','+p[1]);lgNext++;pop();
+if(lgNext===LG[lgIdx].pts.length){var p0=LG[lgIdx].pts[0];pl.setAttribute('points',pl.getAttribute('points')+' '+p0[0]+','+p0[1]);$('lgpoly').setAttribute('visibility','visible');yay('Você ligou tudo!')}}
+$('lgnext').onclick=function(){lgLoad(lgIdx+1);pop()};
+/* ===== APP NA TELA INICIAL ===== */
+var icon='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🐶</text></svg>');
+var man={name:'Meus Pets',short_name:'Meus Pets',start_url:location.href,display:'standalone',background_color:'#ffd6e8',theme_color:'#ff8fb1',icons:[{src:icon,sizes:'any',type:'image/svg+xml'}]};
+var lk=document.createElement('link');lk.rel='manifest';lk.href='data:application/manifest+json,'+encodeURIComponent(JSON.stringify(man));document.head.appendChild(lk);
+</script>
+</body>
+</html>
