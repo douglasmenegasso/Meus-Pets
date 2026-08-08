@@ -12,7 +12,9 @@ body{background:linear-gradient(160deg,#ffd6e8,#fff6b8,#c9f2dc,#cfe8ff,#e7d7ff);
 .stage{position:relative;aspect-ratio:16/9;width:min(100vw,177vh);touch-action:none;overflow:hidden}
 .bg{position:absolute;inset:0;width:100%;height:100%}
 img{-webkit-user-drag:none}
-#pet{position:absolute;left:66%;top:38%;width:30%}
+#petwrap{position:absolute;inset:0;pointer-events:none}
+#petwrap.intub{clip-path:polygon(0 0,100% 0,100% 52%,74% 52%,68% 57.5%,58% 60%,47% 60.6%,36% 60%,26% 57.5%,20% 52%,0 52%)}
+#pet{position:absolute;left:68%;top:40%;width:26%;pointer-events:auto}
 #pet img{width:100%;pointer-events:none}
 #pet .dirt,#pet .tuft,#foam,#pet .drop{pointer-events:none}
 #pet .dirt{position:absolute;width:13%;height:10%;background:#8a5a3b;border-radius:50%;opacity:.8}
@@ -21,7 +23,9 @@ img{-webkit-user-drag:none}
 #foam{position:absolute;left:18%;top:42%;width:64%;height:45%;background:radial-gradient(circle at 20% 60%,#fff 12px,transparent 13px),radial-gradient(circle at 50% 40%,#fff 16px,transparent 17px),radial-gradient(circle at 80% 60%,#fff 12px,transparent 13px);opacity:0}
 #pet .drop{position:absolute;font-size:1.4em;opacity:0;transition:transform .5s,opacity .5s}
 #acc{position:absolute;left:60%;top:0;font-size:2em;display:none}
-#water{position:absolute;left:27%;top:51%;width:46%;height:13%;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#e8f8ff 0%,#8fd4f5 45%,#4aa8dd 100%);opacity:0;transform:scale(.4);pointer-events:none}
+#waterclip{position:absolute;inset:0;clip-path:ellipse(26% 7.5% at 47% 53%);pointer-events:none}
+#water{position:absolute;left:18%;top:58%;width:60%;height:25%;background:linear-gradient(#8fd4f5,#3d9bd6);opacity:0}
+#water .surf{position:absolute;top:-4%;left:0;width:100%;height:14%;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,#eaf9ff 0%,#9edcf7 70%,#6cc0ea 100%)}
 #steps{position:absolute;top:2%;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:8;background:#ffffffcc;border-radius:20px;padding:6px 10px}
 #steps span{font-size:1.3em;filter:grayscale(1);opacity:.4}
 #steps span.now{filter:none;opacity:1;animation:pu 1s infinite}
@@ -63,14 +67,14 @@ img{-webkit-user-drag:none}
 
 <div class="stage" id="st">
 <img class="bg" src="fundo-banho.png"/>
-<div id="pet"><img id="petimg" class="cut" src="pet-sujo.png"/>
+<div id="petwrap"><div id="pet"><img id="petimg" class="cut" src="pet-sujo.png"/>
 <div class="dirt" style="left:44%;top:22%"></div><div class="dirt" style="left:56%;top:62%"></div><div class="dirt" style="left:42%;top:76%"></div>
 <div class="tuft" style="left:30%;top:14%"></div><div class="tuft" style="left:64%;top:12%"></div><div class="tuft" style="left:26%;top:58%"></div><div class="tuft" style="left:68%;top:56%"></div>
 <div id="foam"></div>
 <span class="drop" style="left:35%;top:20%">💧</span><span class="drop" style="left:60%;top:35%">💧</span><span class="drop" style="left:45%;top:60%">💧</span>
 <div id="acc"></div>
-</div>
-<div id="water"></div>
+</div></div>
+<div id="waterclip"><div id="water"><div class="surf"></div></div></div>
 <div id="steps"></div>
 <div id="hint"></div>
 <div id="shelf">
@@ -80,7 +84,7 @@ img{-webkit-user-drag:none}
 <img class="tool cut" data-t="toalha" src="toalha.png"/>
 <img class="tool cut" data-t="escova" src="escova.png"/>
 </div>
-<div id="accbar"><button onclick="acc('🎀')"></button><button onclick="acc('📿')"></button></div>
+<div id="accbar"><button onclick="acc('🎀')">🎀</button><button onclick="acc('📿')">📿</button></div>
 <div id="fxl" style="position:absolute;inset:0;pointer-events:none;z-index:9"></div>
 </div>
 
@@ -98,8 +102,8 @@ img{-webkit-user-drag:none}
 
 <script>
 var $=function(i){return document.getElementById(i)};
-var st=$('st'),pet=$('pet'),held=null,dragPet=false,step=0,prog=0,waterH=0,last=0,lastS=0,lastH=0,inTubBed=false,filled=false,wLoop=null,pLoop=null;
-var ICONS=['🚿','','🧴','','🚿','','🖌️','🎀'];
+var st=$('st'),pet=$('pet'),petwrap=$('petwrap'),held=null,dragPet=false,step=0,prog=0,waterH=0,last=0,lastS=0,lastH=0,inTubBed=false,wLoop=null,pLoop=null;
+var ICONS=['🚿','🐾','🧴','🧽','','🧻','️','🎀'];
 $('steps').innerHTML=ICONS.map(function(c){return '<span>'+c+'</span>'}).join('');
 var TOOLNOW={0:'chuveiro',2:'shampoo',3:'esponja',4:'chuveiro',5:'toalha',6:'escova'};
 function setStep(n){step=n;prog=0;document.querySelectorAll('#steps span').forEach(function(s,i){s.classList.toggle('done',i<n);s.classList.toggle('now',i===n)});
@@ -123,14 +127,14 @@ function cheer(){[523,659,784,1047].forEach(function(f,i){tone(f,.2,'triangle',i
 var mOn=true,mT=null,mI=0,mN=0;
 var TUNE=[[330,.3],[330,.3],[349,.3],[392,.3],[392,.3],[349,.3],[330,.3],[294,.3],[262,.3],[262,.3],[294,.3],[330,.3],[330,.45],[294,.15],[294,.6]];
 function sch(){var a=ac();while(mN<a.currentTime+.6){var n=TUNE[mI%TUNE.length];tone(n[0],n[1]*.9,'triangle',mN-a.currentTime,.08);mN+=n[1];mI++}}
-function tm(){mOn=!mOn;$('mus').textContent=mOn?'🔊':'';if(mOn){mN=ac().currentTime+.1;if(!mT)mT=setInterval(sch,200)}else{clearInterval(mT);mT=null}}
+function tm(){mOn=!mOn;$('mus').textContent=mOn?'🔊':'🔇';if(mOn){mN=ac().currentTime+.1;if(!mT)mT=setInterval(sch,200)}else{clearInterval(mT);mT=null}}
 document.addEventListener('pointerdown',function(){if(mOn&&!mT){mN=ac().currentTime+.1;mT=setInterval(sch,200)}},{once:true});
 /* FX */
 function fx(e,x,y){var s=document.createElement('span');s.className='fx';s.textContent=e;s.style.left=x+'%';s.style.top=y+'%';$('fxl').appendChild(s);setTimeout(function(){s.remove()},1100)}
 function drop(x,y){var s=document.createElement('span');s.className='pd';s.style.left=(x+Math.random()*6-3)+'%';s.style.top=y+'%';$('fxl').appendChild(s);setTimeout(function(){s.remove()},600)}
 function pct(e){var r=st.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100}}
 function overPet(p){var r=pet.getBoundingClientRect(),s=st.getBoundingClientRect(),q={x:p.x/100*s.width+s.left,y:p.y/100*s.height+s.top};return q.x>r.left-10&&q.x<r.right+10&&q.y>r.top-10&&q.y<r.bottom+10}
-var TUB={x:28,y:48,w:44,h:30};
+var TUB={x:28,y:48,w:44,h:26};
 function inTub(p){return p.x>TUB.x&&p.x<TUB.x+TUB.w&&p.y>TUB.y&&p.y<TUB.y+TUB.h}
 function petInTub(){var r=pet.getBoundingClientRect(),s=st.getBoundingClientRect();return inTub({x:((r.left+r.width/2)-s.left)/s.width*100,y:((r.top+r.height/2)-s.top)/s.height*100})}
 function stopWater(){if(wLoop){wLoop();wLoop=null}if(pLoop){clearInterval(pLoop);pLoop=null}}
@@ -141,8 +145,8 @@ if(e.target.closest('#pet')&&!inTubBed){dragPet=true}});
 st.addEventListener('pointermove',function(e){var p=pct(e);var n=Date.now();
 if(held){$('held').style.left=(e.clientX-35)+'px';$('held').style.top=(e.clientY-45)+'px';
 if(held==='chuveiro'&&(step===0||step===4)){if(!wLoop){wLoop=noiseLoop(900,.15);pLoop=setInterval(function(){var r=$('held').getBoundingClientRect(),s=st.getBoundingClientRect();drop((r.left-s.left)/s.width*100,(r.top-s.top)/s.height*100+8)},70)}
-if(step===0&&inTub(p)){waterH=Math.min(100,waterH+1.1);$('water').style.opacity=waterH/100;$('water').style.transform='scale('+(0.4+0.6*waterH/100)+')';if(n-last>150){last=n;tone(500+waterH*4,.06,'sine',0,.06)}
-if(waterH>=100){filled=true;for(var i=0;i<4;i++)fx('🫧',35+i*10,48);if(inTubBed||petInTub()){enterTub();setStep(2)}else setStep(1)}}
+if(step===0&&inTub(p)){waterH=Math.min(100,waterH+1.1);$('water').style.opacity=Math.min(1,waterH/30);$('water').style.top=(58-11*waterH/100)+'%';if(n-last>150){last=n;tone(500+waterH*4,.06,'sine',0,.06)}
+if(waterH>=100){for(var i=0;i<4;i++)fx('🫧',35+i*10,48);if(inTubBed||petInTub()){enterTub();setStep(2)}else setStep(1)}}
 else if(step===4&&overPet(p)){prog=Math.min(100,prog+1.6);$('foam').style.opacity=Math.max(0,1-prog/100);if(prog>=100){document.querySelectorAll('#pet .drop').forEach(function(d){d.style.opacity=1});setStep(5)}}
 }else{stopWater();
 if(held==='chuveiro'&&step===0)hint('Segure o chuveirinho DENTRO da banheira! 💦');
@@ -155,11 +159,11 @@ if(prog>=100){$('petimg').src=window.limpo||'pet-limpo.png';document.querySelect
 else if(held==='shampoo'&&step<2)hint('Primeiro o pet entra na banheira! 🐾');
 else if(held==='shampoo'&&step>2)hint('Agora esfregue a esponja! 🧽');
 }}}
-if(dragPet){pet.style.left=Math.min(86,Math.max(2,p.x-15))+'%';pet.style.top=Math.min(78,Math.max(2,p.y-18))+'%'}});
-function enterTub(){inTubBed=true;pet.style.left='35%';pet.style.top='38%';for(var i=0;i<5;i++)fx('💦',40+i*6,50);sweep(600,200,.3)}
+if(dragPet){pet.style.left=Math.min(86,Math.max(2,p.x-13))+'%';pet.style.top=Math.min(78,Math.max(2,p.y-20))+'%'}});
+function enterTub(){inTubBed=true;petwrap.classList.add('intub');pet.style.left='37%';pet.style.top='31%';for(var i=0;i<5;i++)fx('💦',40+i*6,50);sweep(600,200,.3)}
 st.addEventListener('pointerup',function(e){if(dragPet){dragPet=false;var p=pct(e);
 if(step===1&&inTub(p)){enterTub();setStep(2)}
-else if(step===1){pet.style.left='66%';pet.style.top='38%'}
+else if(step===1){pet.style.left='68%';pet.style.top='40%'}
 else if(step===0&&inTub(p)){enterTub()}}
 held=null;stopWater();$('held').style.display='none'});
 st.addEventListener('pointercancel',function(){dragPet=false;held=null;stopWater();$('held').style.display='none'});
