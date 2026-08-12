@@ -3,171 +3,572 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="theme-color" content="#b28dff"/>
-<title>Meus Pets — Banho</title>
+<meta name="theme-color" content="#ff70a6"/>
+<title>Meus Pets — Mundo Mágico 🐾</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{height:100%;overflow:hidden}
-body{background:linear-gradient(160deg,#ffd6e8,#fff6b8,#c9f2dc,#cfe8ff,#e7d7ff);font-family:"Comic Sans MS",cursive;display:flex;align-items:center;justify-content:center}
-.stage{position:relative;aspect-ratio:16/9;width:min(100vw,177vh);touch-action:none;overflow:hidden}
-.bg{position:absolute;inset:0;width:100%;height:100%}
-img{-webkit-user-drag:none}
-#petwrap{position:absolute;inset:0;pointer-events:none}
-#petwrap.intub{clip-path:polygon(0 0,100% 0,100% 52%,74% 52%,68% 57.5%,58% 60%,47% 60.6%,36% 60%,26% 57.5%,20% 52%,0 52%)}
-#pet{position:absolute;left:68%;top:40%;width:26%;pointer-events:auto}
-#pet img{width:100%;pointer-events:none}
-#pet .dirt,#pet .tuft,#foam,#pet .drop{pointer-events:none}
-#pet .dirt{position:absolute;width:13%;height:10%;background:#8a5a3b;border-radius:50%;opacity:.8}
-#pet .tuft{position:absolute;width:15%;height:12%;background:#8a5a3b;clip-path:polygon(0 100%,15% 20%,30% 90%,45% 0,60% 85%,78% 10%,100% 100%);transition:transform .5s}
-#pet .gone{transform:scale(0)}
-#foam{position:absolute;left:18%;top:42%;width:64%;height:45%;background:radial-gradient(circle at 20% 60%,#fff 12px,transparent 13px),radial-gradient(circle at 50% 40%,#fff 16px,transparent 17px),radial-gradient(circle at 80% 60%,#fff 12px,transparent 13px);opacity:0}
-#pet .drop{position:absolute;font-size:1.4em;opacity:0;transition:transform .5s,opacity .5s}
-#acc{position:absolute;left:60%;top:0;font-size:2em;display:none}
-#waterclip{position:absolute;inset:0;clip-path:ellipse(26% 7.5% at 47% 53%);pointer-events:none}
-#water{position:absolute;left:18%;top:58%;width:60%;height:25%;background:linear-gradient(#8fd4f5,#3d9bd6);opacity:0}
-#water .surf{position:absolute;top:-4%;left:0;width:100%;height:14%;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,#eaf9ff 0%,#9edcf7 70%,#6cc0ea 100%)}
-#steps{position:absolute;top:2%;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:8;background:#ffffffcc;border-radius:20px;padding:6px 10px}
-#steps span{font-size:1.3em;filter:grayscale(1);opacity:.4}
-#steps span.now{filter:none;opacity:1;animation:pu 1s infinite}
-#steps span.done{filter:none;opacity:1}
-@keyframes pu{50%{transform:scale(1.25)}}
-#shelf{position:absolute;bottom:2%;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:8;background:#ffffffcc;border-radius:22px;padding:8px 12px}
-.tool{width:13vw;max-width:70px;border:3px solid #ffd23e;border-radius:16px;background:#fff;padding:3px;cursor:grab}
-.tool.now{animation:pu 1s infinite;border-color:#ff5d8f}
-#held{position:fixed;width:13vw;max-width:70px;pointer-events:none;z-index:99;display:none;transform:rotate(-15deg)}
-#hint{position:absolute;top:10%;left:50%;transform:translateX(-50%);background:#fff;border:4px solid #ffd23e;border-radius:20px;padding:8px 20px;font-size:1.2em;font-weight:bold;color:#e75480;display:none;z-index:10;white-space:nowrap}
-.fx{position:absolute;font-size:2em;pointer-events:none;z-index:9;animation:fl 1.1s ease-out forwards}
-@keyframes fl{from{transform:translateY(0) scale(.6);opacity:1}to{transform:translateY(-80px) scale(1.5);opacity:0}}
-.pd{position:absolute;width:6px;height:14px;background:#6ec6f2;border-radius:4px;pointer-events:none;z-index:7;animation:pf .55s linear forwards}
-@keyframes pf{to{transform:translateY(160px);opacity:.1}}
-.hop{animation:hp .6s}
-@keyframes hp{30%{transform:translateY(-18px) scale(1.08)}60%{transform:translateY(0)}}
-#accbar{position:absolute;bottom:24%;left:50%;transform:translateX(-50%);display:none;gap:14px;z-index:9}
-#accbar button{font-size:2em;background:#fff;border:4px solid #ffd23e;border-radius:18px;padding:6px 16px}
-#pais{position:fixed;top:8px;right:8px;z-index:60;width:50px;height:50px;border-radius:50%;border:3px solid #fff;background:#4cc9f0;font-size:1.3em}
-#mus{position:fixed;top:8px;left:8px;z-index:60;width:50px;height:50px;border-radius:50%;border:3px solid #fff;background:#7ed957;font-size:1.3em}
-#pov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:99}
-#pov.show{display:flex}
-.pb{background:#fff;border-radius:24px;padding:22px 26px;max-width:88vw;border:5px solid #4cc9f0;font-size:1.05em;color:#445;line-height:1.5}
-.pb h2{color:#2a8db8;margin-bottom:8px}
-.pb button{margin-top:12px;font-family:inherit;font-weight:bold;padding:10px 22px;border-radius:16px;border:4px solid #fff;background:#7ed957}
-#yay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:99}
-#yay.show{display:flex}
-.yb{background:#fff;border-radius:28px;padding:24px 40px;text-align:center;border:5px solid #ffd23e;max-width:86vw}
-.ye{font-size:3.6em;animation:hp 1s infinite}
-.yb p{font-size:1.25em;color:#e75480;font-weight:bold;margin:8px 0}
-.yb small{color:#67a;display:block;margin-bottom:12px}
-.yb button{font-family:inherit;font-size:1.05em;font-weight:bold;padding:10px 22px;border-radius:18px;border:4px solid #fff;background:#9adcf7}
+html,body{height:100%;overflow:hidden;font-family:'Fredoka+One',cursive,sans-serif;background:linear-gradient(135deg,#ffe5ec,#ffc2d1,#b5e2fa,#cbf3f0)}
+body{display:flex;align-items:center;justify-content:center}
+
+/* Container do Jogo (Proporção Responsiva Tablet/Mobile) */
+.stage{position:relative;width:100vw;height:100vh;max-width:480px;max-height:860px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.15);overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:500px){.stage{border-radius:36px;border:8px solid #fff}}
+
+/* Top Bar / Navegação */
+.topbar{position:absolute;top:0;left:0;right:0;height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:50;background:linear-gradient(to bottom,rgba(255,255,255,0.9),rgba(255,255,255,0));pointer-events:auto}
+.btn-icon{width:46px;height:46px;border-radius:50%;border:3px solid #fff;background:#ff70a6;color:#fff;font-size:1.4em;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.15);transition:transform 0.2s}
+.btn-icon:active{transform:scale(0.9)}
+.btn-home{background:#4cc9f0}
+.btn-sound{background:#7ed957}
+.btn-parent{background:#ffb703}
+
+/* Telas */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px 20px 20px;overflow-y:auto}
+.screen.active{display:flex}
+
+/* MENU PRINCIPAL */
+#screen-menu{background:radial-gradient(circle at center,#fff0f3 0%,#e0f7fa 100%);padding-top:75px}
+.menu-title-box{background:linear-gradient(135deg,#ff4d6d,#ff758f);color:#fff;padding:12px 28px;border-radius:30px;border:4px solid #fff;box-shadow:0 8px 20px rgba(255,77,109,0.3);text-align:center;margin-bottom:15px;transform:rotate(-2deg)}
+.menu-title-box h1{font-size:1.6em;text-shadow:2px 2px 0 rgba(0,0,0,0.1)}
+.menu-title-box p{font-size:0.85em;font-family:'Quicksand',sans-serif;font-weight:700}
+
+/* Seletor de Pets */
+.pets-row{display:flex;gap:10px;margin-bottom:15px;width:100%;justify-content:center}
+.pet-card{background:#fff;border:4px solid #ffd166;border-radius:20px;width:75px;height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.08);transition:transform 0.2s}
+.pet-card.selected{border-color:#ff4d6d;transform:scale(1.08);background:#fff0f3}
+.pet-card span{font-size:2.2em}
+.pet-card label{font-size:0.75em;color:#555;margin-top:2px}
+
+/* Grid de Atividades (Estilo das imagens) */
+.activities-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:400px;overflow-y:auto;padding-bottom:20px}
+.act-card{background:#fff;border:4px solid #4cc9f0;border-radius:22px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 15px rgba(0,0,0,0.08);transition:all 0.2s;position:relative;height:115px}
+.act-card:active{transform:scale(0.95)}
+.act-card:nth-child(2n){border-color:#ffd166}
+.act-card:nth-child(3n){border-color:#ff758f}
+.act-card:nth-child(4n){border-color:#7ed957}
+.act-icon{font-size:2.6em;margin-bottom:4px}
+.act-name{font-size:0.85em;color:#333;text-align:center;font-weight:bold;line-height:1.1}
+
+/* TELA DE JOGO / ATIVIDADE */
+.game-area{position:relative;width:100%;flex:1;background:#eefcff;border-radius:24px;border:4px solid #bde0fe;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bg-room{position:absolute;inset:0;background:linear-gradient(to bottom,#a0e7e5,#b4f8c8);display:flex;align-items:center;justify-content:center}
+
+/* Etapas / Progresso */
+.steps-bar{display:flex;gap:6px;background:rgba(255,255,255,0.85);padding:6px 14px;border-radius:20px;margin-bottom:10px;box-shadow:0 4px 10px rgba(0,0,0,0.05)}
+.steps-bar span{font-size:1.2em;opacity:0.3;filter:grayscale(1)}
+.steps-bar span.now{opacity:1;filter:none;animation:pulse 1s infinite}
+.steps-bar span.done{opacity:1;filter:none}
+
+@keyframes pulse{50%{transform:scale(1.25)}}
+
+/* Instrução / Dica */
+.hint-bubble{background:#fff;border:3px solid #ffd166;padding:8px 18px;border-radius:20px;font-size:1.05em;color:#ff4d6d;margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;min-height:38px;display:flex;align-items:center;justify-content:center}
+
+/* Prateleira de Ferramentas */
+.shelf{display:flex;gap:10px;background:rgba(255,255,255,0.9);padding:10px 16px;border-radius:20px;margin-top:10px;box-shadow:0 6px 15px rgba(0,0,0,0.08);z-index:10}
+.tool{width:55px;height:55px;background:#fff;border:3px solid #ff758f;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.8em;cursor:pointer;transition:transform 0.2s}
+.tool.now{animation:pulse 1s infinite;border-color:#ffd166;background:#fff9db}
+
+/* Modal Pais / Sucesso */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:28px;padding:25px;max-width:400px;border:6px solid #4cc9f0;text-align:center;box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+.modal-box h2{color:#3a86ff;margin-bottom:10px;font-size:1.4em}
+.modal-box p{font-family:'Quicksand',sans-serif;font-weight:700;color:#444;font-size:0.95em;line-height:1.5;text-align:left;margin-bottom:15px}
+.modal-box button{background:#7ed957;color:#fff;border:none;padding:10px 24px;border-radius:16px;font-family:inherit;font-size:1.1em;cursor:pointer;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+
+/* Tela de Sucesso (Parabéns) */
+.yay-box{background:#fff;border-radius:28px;padding:30px;text-align:center;border:6px solid #ffd166;max-width:38px;width:90%;box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+.yay-emoji{font-size:4em;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.yay-box p{color:#ff4d6d;font-size:1.3em;margin:10px 0}
+.yay-box small{font-family:'Quicksand',sans-serif;color:#666;display:block;margin-bottom:15px}
+
+/* Elementos interativos gerais */
+.floating-item{position:absolute;cursor:pointer;transition:transform 0.2s}
 </style>
 </head>
 <body>
-<button id="mus" onclick="tm()">🔊</button>
-<button id="pais" onclick="$('pov').classList.add('show')">ℹ️</button>
-<img id="held"/>
 
-<div class="stage" id="st">
-<img class="bg" src="fundo-banho.png"/>
-<div id="petwrap"><div id="pet"><img id="petimg" class="cut" src="pet-sujo.png"/>
-<div class="dirt" style="left:44%;top:22%"></div><div class="dirt" style="left:56%;top:62%"></div><div class="dirt" style="left:42%;top:76%"></div>
-<div class="tuft" style="left:30%;top:14%"></div><div class="tuft" style="left:64%;top:12%"></div><div class="tuft" style="left:26%;top:58%"></div><div class="tuft" style="left:68%;top:56%"></div>
-<div id="foam"></div>
-<span class="drop" style="left:35%;top:20%">💧</span><span class="drop" style="left:60%;top:35%">💧</span><span class="drop" style="left:45%;top:60%">💧</span>
-<div id="acc"></div>
-</div></div>
-<div id="waterclip"><div id="water"><div class="surf"></div></div></div>
-<div id="steps"></div>
-<div id="hint"></div>
-<div id="shelf">
-<img class="tool cut" data-t="chuveiro" src="chuveiro.png"/>
-<img class="tool cut" data-t="shampoo" src="shampoo.png"/>
-<img class="tool cut" data-t="esponja" src="esponja.png"/>
-<img class="tool cut" data-t="toalha" src="toalha.png"/>
-<img class="tool cut" data-t="escova" src="escova.png"/>
+<div class="stage">
+  <!-- Barra Superior -->
+  <div class="topbar">
+    <button class="btn-icon btn-sound" id="btn-sound" onclick="toggleSound()">🔊</button>
+    <button class="btn-icon btn-home" id="btn-home" onclick="goMenu()" style="display:none">🏠</button>
+    <button class="btn-icon btn-parent" onclick="openParentModal()">ℹ️</button>
+  </div>
+
+  <!-- TELA 1: MENU PRINCIPAL -->
+  <div class="screen active" id="screen-menu">
+    <div class="menu-title-box">
+      <h1>🐾 Meus Pets 🐾</h1>
+      <p>O Mundo Mágico dos Animais</p>
+    </div>
+
+    <!-- Seletor de Pets -->
+    <div class="pets-row" id="pets-selector">
+      <div class="pet-card selected" onclick="selectPet(0)"><span>🐶</span><label>Odie</label></div>
+      <div class="pet-card" onclick="selectPet(1)"><span>🐱</span><label>Mimi</label></div>
+      <div class="pet-card" onclick="selectPet(2)"><span>🐰</span><label>Bubu</label></div>
+      <div class="pet-card" onclick="selectPet(3)"><span>🐼</span><label>Pandinha</label></div>
+    </div>
+
+    <!-- Grade de Atividades -->
+    <div class="activities-grid">
+      <div class="act-card" onclick="startActivity('bath')">
+        <div class="act-icon">🛁</div>
+        <div class="act-name">Hora do Banho</div>
+      </div>
+      <div class="act-card" onclick="startActivity('dentist')">
+        <div class="act-icon">🦷</div>
+        <div class="act-name">Dentista Fofinho</div>
+      </div>
+      <div class="act-card" onclick="startActivity('spa')">
+        <div class="act-icon">✨</div>
+        <div class="act-name">Spa Relaxante</div>
+      </div>
+      <div class="act-card" onclick="startActivity('doctor')">
+        <div class="act-icon">🩺</div>
+        <div class="act-name">Médico Pet</div>
+      </div>
+      <div class="act-card" onclick="startActivity('dressup')">
+        <div class="act-icon">👑</div>
+        <div class="act-name">Vestir & Acessórios</div>
+      </div>
+      <div class="act-card" onclick="startActivity('color')">
+        <div class="act-icon">🎨</div>
+        <div class="act-name">Livro de Colorir</div>
+      </div>
+      <div class="act-card" onclick="startActivity('sleep')">
+        <div class="act-icon">🌙</div>
+        <div class="act-name">Boa Noite</div>
+      </div>
+      <div class="act-card" onclick="startActivity('kitchen')">
+        <div class="act-icon">🍪</div>
+        <div class="act-name">Comidinhas & Snacks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 2: ATIVIDADE (DINÂMICA) -->
+  <div class="screen" id="screen-game">
+    <div class="steps-bar" id="game-steps"></div>
+    <div class="hint-bubble" id="game-hint">Carregando atividade...</div>
+    <div class="game-area" id="game-canvas-area">
+      <!-- Conteúdo injetado via JS conforme a atividade -->
+    </div>
+    <div class="shelf" id="game-shelf"></div>
+  </div>
 </div>
-<div id="accbar"><button onclick="acc('🎀')">🎀</button><button onclick="acc('📿')">📿</button></div>
-<div id="fxl" style="position:absolute;inset:0;pointer-events:none;z-index:9"></div>
+
+<!-- Modal Pais -->
+<div class="modal-overlay" id="modal-parent">
+  <div class="modal-box">
+    <h2>ℹ️ Espaço dos Pais</h2>
+    <p>
+      <b>Benefícios para crianças (2 a 5 anos):</b><br>
+      • <b>Coordenação Motora Fina:</b> Arrastar, tocar, esfregar e pentear.<br>
+      • <b>Lógica e Sequência:</b> Compreender ordens de higiene (banhar, secar, vestir).<br>
+      • <b>Empatia e Cuidado:</b> Desenvolver carinho pelos animais.<br>
+      • <b>Ambiente 100% Seguro:</b> Sem propagandas, sem compras no app e sem coleta de dados.
+    </p>
+    <button onclick="closeParentModal()">Entendido ❤️</button>
+  </div>
 </div>
 
-<div id="pov"><div class="pb"><h2>ℹ️ Para os pais</h2>
-<b>O que seu filho aprende:</b><br>
-🛁 Sequência de higiene e lógica (o que vem antes e depois)<br>
-🤲 Coordenação motora fina: arrastar, esfregar, pentear<br>
-💖 Empatia e responsabilidade com os animais<br>
-🗣️ Vocabulário: nomes de objetos e ações<br>
-<b>Dica:</b> junte-se a ela e pergunte "o que está faltando agora?".<br>
-🔒 Sem anúncios, sem coleta de dados.
-<br><button onclick="$('pov').classList.remove('show')">Fechar</button></div></div>
-
-<div id="yay"><div class="yb"><div class="ye">🎉</div><p>Banho completo! Que lindo!</p><small>💡 Converse: "por que deixamos o pet limpinho?"</small><button onclick="$('yay').classList.remove('show')">Continuar ▶</button></div></div>
+<!-- Modal Sucesso -->
+<div class="modal-overlay" id="modal-yay">
+  <div class="yay-box">
+    <div class="yay-emoji">🎉</div>
+    <p>Parabéns! Tarefa Concluída!</p>
+    <small>Que pet feliz e limpinho!</small>
+    <button onclick="nextActivityOrMenu()">Continuar ▶</button>
+  </div>
+</div>
 
 <script>
-var $=function(i){return document.getElementById(i)};
-var st=$('st'),pet=$('pet'),petwrap=$('petwrap'),held=null,dragPet=false,step=0,prog=0,waterH=0,last=0,lastS=0,lastH=0,inTubBed=false,wLoop=null,pLoop=null;
-var ICONS=['🚿','🐾','🧴','🧽','','🧻','️','🎀'];
-$('steps').innerHTML=ICONS.map(function(c){return '<span>'+c+'</span>'}).join('');
-var TOOLNOW={0:'chuveiro',2:'shampoo',3:'esponja',4:'chuveiro',5:'toalha',6:'escova'};
-function setStep(n){step=n;prog=0;document.querySelectorAll('#steps span').forEach(function(s,i){s.classList.toggle('done',i<n);s.classList.toggle('now',i===n)});
-document.querySelectorAll('.tool').forEach(function(t){t.classList.toggle('now',t.dataset.t===TOOLNOW[n])})}
-setStep(0);
-function hint(m){var n=Date.now();if(n-lastH<2500)return;lastH=n;var h=$('hint');h.textContent=m;h.style.display='block';clearTimeout(h.t);h.t=setTimeout(function(){h.style.display='none'},2500);tone(500,.1,'sine',0,.15)}
-/* RECORTA FUNDO BRANCO */
-function cut(img){try{var w=img.naturalWidth,h=img.naturalHeight;if(!w)return;var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.drawImage(img,0,0);var d=x.getImageData(0,0,w,h),p=d.data,vis=new Uint8Array(w*h),stk=[0,w-1,(h-1)*w,(h-1)*w+w-1];
-while(stk.length){var i=stk.pop();if(i<0||i>=w*h||vis[i])continue;vis[i]=1;var o=i*4;if(!(p[o]>225&&p[o+1]>225&&p[o+2]>215))continue;p[o+3]=0;var r=i%w;if(r>0)stk.push(i-1);if(r<w-1)stk.push(i+1);stk.push(i-w);stk.push(i+w)}
-x.putImageData(d,0,0);img.src=c.toDataURL()}catch(e){}}
-window.addEventListener('load',function(){document.querySelectorAll('.cut').forEach(function(im){cut(im)});var li=new Image();li.onload=function(){cut(li);window.limpo=li.src};li.src='pet-limpo.png'});
-/* SOM */
-var AC;function ac(){AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
-function tone(f,d,ty,t,v){d=d||.15;ty=ty||'sine';t=t||0;v=v||.3;var a=ac(),o=a.createOscillator(),g=a.createGain(),n=a.currentTime+t;o.type=ty;o.frequency.value=f;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(v,n+.02);g.gain.exponentialRampToValueAtTime(.001,n+d);o.start(n);o.stop(n+d+.05)}
-function sweep(a,b,d,ty,t){var x=ac(),o=x.createOscillator(),g=x.createGain(),n=x.currentTime+(t||0);o.type=ty||'sine';o.frequency.setValueAtTime(a,n);o.frequency.linearRampToValueAtTime(b,n+d);o.connect(g);g.connect(x.destination);g.gain.setValueAtTime(.3,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.start(n);o.stop(n+d+.05)}
-var nbuf;function noiseLoop(fq,vol){var a=ac();if(!nbuf){nbuf=a.createBuffer(1,a.sampleRate,a.sampleRate);var ch=nbuf.getChannelData(0);for(var i=0;i<ch.length;i++)ch[i]=Math.random()*2-1}
-var s=a.createBufferSource();s.buffer=nbuf;s.loop=true;var f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=fq;var g=a.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(a.destination);s.start();
-return function(){g.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(function(){s.stop()},400)}}
-function pop(){tone(600,.08,'triangle')}
-function cheer(){[523,659,784,1047].forEach(function(f,i){tone(f,.2,'triangle',i*.12)})}
-var mOn=true,mT=null,mI=0,mN=0;
-var TUNE=[[330,.3],[330,.3],[349,.3],[392,.3],[392,.3],[349,.3],[330,.3],[294,.3],[262,.3],[262,.3],[294,.3],[330,.3],[330,.45],[294,.15],[294,.6]];
-function sch(){var a=ac();while(mN<a.currentTime+.6){var n=TUNE[mI%TUNE.length];tone(n[0],n[1]*.9,'triangle',mN-a.currentTime,.08);mN+=n[1];mI++}}
-function tm(){mOn=!mOn;$('mus').textContent=mOn?'🔊':'🔇';if(mOn){mN=ac().currentTime+.1;if(!mT)mT=setInterval(sch,200)}else{clearInterval(mT);mT=null}}
-document.addEventListener('pointerdown',function(){if(mOn&&!mT){mN=ac().currentTime+.1;mT=setInterval(sch,200)}},{once:true});
-/* FX */
-function fx(e,x,y){var s=document.createElement('span');s.className='fx';s.textContent=e;s.style.left=x+'%';s.style.top=y+'%';$('fxl').appendChild(s);setTimeout(function(){s.remove()},1100)}
-function drop(x,y){var s=document.createElement('span');s.className='pd';s.style.left=(x+Math.random()*6-3)+'%';s.style.top=y+'%';$('fxl').appendChild(s);setTimeout(function(){s.remove()},600)}
-function pct(e){var r=st.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100}}
-function overPet(p){var r=pet.getBoundingClientRect(),s=st.getBoundingClientRect(),q={x:p.x/100*s.width+s.left,y:p.y/100*s.height+s.top};return q.x>r.left-10&&q.x<r.right+10&&q.y>r.top-10&&q.y<r.bottom+10}
-var TUB={x:28,y:48,w:44,h:26};
-function inTub(p){return p.x>TUB.x&&p.x<TUB.x+TUB.w&&p.y>TUB.y&&p.y<TUB.y+TUB.h}
-function petInTub(){var r=pet.getBoundingClientRect(),s=st.getBoundingClientRect();return inTub({x:((r.left+r.width/2)-s.left)/s.width*100,y:((r.top+r.height/2)-s.top)/s.height*100})}
-function stopWater(){if(wLoop){wLoop();wLoop=null}if(pLoop){clearInterval(pLoop);pLoop=null}}
-/* ARRASTAR */
-st.addEventListener('pointerdown',function(e){e.preventDefault();st.setPointerCapture(e.pointerId);
-var t=e.target.closest('.tool');if(t){held=t.dataset.t;$('held').src=t.src;$('held').style.display='block';pop();return}
-if(e.target.closest('#pet')&&!inTubBed){dragPet=true}});
-st.addEventListener('pointermove',function(e){var p=pct(e);var n=Date.now();
-if(held){$('held').style.left=(e.clientX-35)+'px';$('held').style.top=(e.clientY-45)+'px';
-if(held==='chuveiro'&&(step===0||step===4)){if(!wLoop){wLoop=noiseLoop(900,.15);pLoop=setInterval(function(){var r=$('held').getBoundingClientRect(),s=st.getBoundingClientRect();drop((r.left-s.left)/s.width*100,(r.top-s.top)/s.height*100+8)},70)}
-if(step===0&&inTub(p)){waterH=Math.min(100,waterH+1.1);$('water').style.opacity=Math.min(1,waterH/30);$('water').style.top=(58-11*waterH/100)+'%';if(n-last>150){last=n;tone(500+waterH*4,.06,'sine',0,.06)}
-if(waterH>=100){for(var i=0;i<4;i++)fx('🫧',35+i*10,48);if(inTubBed||petInTub()){enterTub();setStep(2)}else setStep(1)}}
-else if(step===4&&overPet(p)){prog=Math.min(100,prog+1.6);$('foam').style.opacity=Math.max(0,1-prog/100);if(prog>=100){document.querySelectorAll('#pet .drop').forEach(function(d){d.style.opacity=1});setStep(5)}}
-}else{stopWater();
-if(held==='chuveiro'&&step===0)hint('Segure o chuveirinho DENTRO da banheira! 💦');
-if(overPet(p)){
-if(held==='shampoo'&&step===2){if(n-lastS>90){lastS=n;prog=Math.min(100,prog+2.2);$('foam').style.opacity=prog/100;$('foam').style.transform='scale('+(0.6+prog/250)+')';tone(700+prog*3,.05,'sine',0,.06)}if(prog>=100)setStep(3)}
-else if(held==='esponja'&&step===3){if(n-lastS>90){lastS=n;prog=Math.min(100,prog+1.8);document.querySelectorAll('#pet .dirt').forEach(function(d,i){d.style.opacity=Math.max(0,.8-(prog-i*25)/40)});tone(900,.04,'triangle',0,.07)}if(prog>=100)setStep(4)}
-else if(held==='toalha'&&step===5){if(n-lastS>90){lastS=n;prog=Math.min(100,prog+2);document.querySelectorAll('#pet .drop').forEach(function(d,i){if(prog>(i+1)*30){d.style.opacity=0;d.style.transform='scale(0)'}})}if(prog>=100)setStep(6)}
-else if(held==='escova'&&step===6){if(n-lastS>90){lastS=n;prog=Math.min(100,prog+1.6);document.querySelectorAll('#pet .tuft').forEach(function(t,i){if(prog>(i+1)*22)t.classList.add('gone')});tone(1200,.04,'triangle',0,.06)}
-if(prog>=100){$('petimg').src=window.limpo||'pet-limpo.png';document.querySelectorAll('#pet .dirt').forEach(function(d){d.style.display='none'});pet.classList.add('hop');$('accbar').style.display='flex';setStep(7);cheer()}}
-else if(held==='shampoo'&&step<2)hint('Primeiro o pet entra na banheira! 🐾');
-else if(held==='shampoo'&&step>2)hint('Agora esfregue a esponja! 🧽');
-}}}
-if(dragPet){pet.style.left=Math.min(86,Math.max(2,p.x-13))+'%';pet.style.top=Math.min(78,Math.max(2,p.y-20))+'%'}});
-function enterTub(){inTubBed=true;petwrap.classList.add('intub');pet.style.left='37%';pet.style.top='31%';for(var i=0;i<5;i++)fx('💦',40+i*6,50);sweep(600,200,.3)}
-st.addEventListener('pointerup',function(e){if(dragPet){dragPet=false;var p=pct(e);
-if(step===1&&inTub(p)){enterTub();setStep(2)}
-else if(step===1){pet.style.left='68%';pet.style.top='40%'}
-else if(step===0&&inTub(p)){enterTub()}}
-held=null;stopWater();$('held').style.display='none'});
-st.addEventListener('pointercancel',function(){dragPet=false;held=null;stopWater();$('held').style.display='none'});
-function acc(e){$('acc').textContent=e;$('acc').style.display='block';cheer();for(var i=0;i<6;i++)fx('💖',30+i*8,30+(i%3)*10);$('accbar').style.display='none';$('yay').classList.add('show')}
+// --- ÁUDIO E SONS (Web Audio API) ---
+let audioCtx = null;
+let soundOn = true;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playTone(freq, duration = 0.15, type = 'sine', delay = 0) {
+  if (!soundOn) return;
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const time = audioCtx.currentTime + delay;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, time);
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.25, time + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(time);
+    osc.stop(time + duration + 0.05);
+  } catch(e) {}
+}
+
+function playPop() { playTone(580, 0.08, 'triangle'); }
+function playCheer() {
+  [523, 659, 784, 1046].forEach((f, i) => playTone(f, 0.2, 'triangle', i * 0.1));
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('btn-sound').textContent = soundOn ? '🔊' : '🔇';
+}
+
+// --- ESTADO GLOBAL ---
+let currentPetIndex = 0;
+const petsList = ['🐶', '🐱', '🐰', '🐼'];
+const petsNames = ['Odie', 'Mimi', 'Bubu', 'Pandinha'];
+let currentAct = '';
+let actStep = 0;
+
+function selectPet(idx) {
+  currentPetIndex = idx;
+  document.querySelectorAll('.pet-card').forEach((card, i) => {
+    card.classList.toggle('selected', i === idx);
+  });
+  playPop();
+}
+
+function openParentModal() { document.getElementById('modal-parent').classList.add('show'); }
+function closeParentModal() { document.getElementById('modal-parent').classList.remove('show'); playPop(); }
+function showYay() { document.getElementById('modal-yay').classList.add('show'); playCheer(); }
+function hideYay() { document.getElementById('modal-yay').classList.remove('show'); }
+
+function goMenu() {
+  hideYay();
+  document.getElementById('screen-game').classList.remove('active');
+  document.getElementById('screen-menu').classList.add('active');
+  document.getElementById('btn-home').style.display = 'none';
+  playPop();
+}
+
+function startActivity(act) {
+  currentAct = act;
+  actStep = 0;
+  document.getElementById('screen-menu').classList.remove('active');
+  document.getElementById('screen-game').classList.add('active');
+  document.getElementById('btn-home').style.display = 'flex';
+  playPop();
+  loadActivityContent();
+}
+
+// --- MOTOR DE ATIVIDADES ---
+function loadActivityContent() {
+  const area = document.getElementById('game-canvas-area');
+  const shelf = document.getElementById('game-shelf');
+  const stepsBar = document.getElementById('game-steps');
+  const hint = document.getElementById('game-hint');
+  
+  area.innerHTML = '';
+  shelf.innerHTML = '';
+  stepsBar.innerHTML = '';
+
+  if (currentAct === 'bath') {
+    setupBathGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'dentist') {
+    setupDentistGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'spa') {
+    setupSpaGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'doctor') {
+    setupDoctorGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'dressup') {
+    setupDressupGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'color') {
+    setupColorGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'sleep') {
+    setupSleepGame(area, shelf, stepsBar, hint);
+  } else if (currentAct === 'kitchen') {
+    setupKitchenGame(area, shelf, stepsBar, hint);
+  }
+}
+
+// 1. HORA DO BANHO
+function setupBathGame(area, shelf, stepsBar, hint) {
+  const steps = ['🚿', '🛁', '🧴', '🧽', '🚿', '🧻', '✨'];
+  stepsBar.innerHTML = steps.map((s, i) => `<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Encha a banheira com água morna! 🚿';
+
+  area.innerHTML = `
+    <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(to bottom,#b5e2fa,#cbf3f0)">
+      <div id="bath-tub" style="position:absolute;bottom:40px;width:280px;height:140px;background:#ff758f;border-radius:0 0 100px 100px;border:6px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(0,0,0,0.1)">
+        <div id="bath-water" style="width:100%;height:0%;background:rgba(100,200,255,0.7);border-radius:0 0 90px 90px;transition:height 0.5s"></div>
+      </div>
+      <div id="bath-pet" style="position:absolute;bottom:120px;font-size:5.5em;transition:all 0.5s;cursor:pointer">${petsList[currentPetIndex]}</div>
+      <div id="bubbles" style="position:absolute;bottom:100px;font-size:2em;opacity:0;transition:opacity 0.5s">🫧🧼🫧</div>
+    </div>
+  `;
+
+  shelf.innerHTML = `
+    <div class="tool now" onclick="bathStepAction(1)">🚿</div>
+    <div class="tool" onclick="bathStepAction(2)">🧴</div>
+    <div class="tool" onclick="bathStepAction(3)">🧽</div>
+    <div class="tool" onclick="bathStepAction(4)">🚿</div>
+    <div class="tool" onclick="bathStepAction(5)">🧻</div>
+  `;
+}
+
+let bathProgress = 0;
+function bathStepAction(stepNum) {
+  playPop();
+  const hint = document.getElementById('game-hint');
+  const steps = document.querySelectorAll('#game-steps span');
+  
+  if (stepNum === 1) {
+    bathProgress += 35;
+    document.getElementById('bath-water').style.height = bathProgress + '%';
+    if (bathProgress >= 100) {
+      document.getElementById('bath-pet').style.bottom = '60px';
+      hint.textContent = 'O pet entrou na banheira! Passe o shampoo 🧴';
+      steps[0].classList.replace('now', 'done');
+      steps[1].classList.add('now');
+      steps[2].classList.add('now');
+    } else {
+      hint.textContent = 'Enchendo a banheira... 🌊';
+    }
+  } else if (stepNum === 2) {
+    document.getElementById('bubbles').style.opacity = '1';
+    hint.textContent = 'Esfregue com a esponjinha mágica! 🧽';
+    steps[2].classList.replace('now', 'done');
+    steps[3].classList.add('now');
+  } else if (stepNum === 3) {
+    document.getElementById('bubbles').style.transform = 'scale(1.2)';
+    hint.textContent = 'Enxágue a espuminha com água! 🚿';
+    steps[3].classList.replace('now', 'done');
+    steps[4].classList.add('now');
+  } else if (stepNum === 4) {
+    document.getElementById('bubbles').style.opacity = '0';
+    hint.textContent = 'Seque bem com a toalha macia! 🧻';
+    steps[4].classList.replace('now', 'done');
+    steps[5].classList.add('now');
+  } else if (stepNum === 5) {
+    steps[5].classList.replace('now', 'done');
+    steps[6].classList.add('now');
+    hint.textContent = 'Pronto! Cheiroso e feliz! ✨';
+    showYay();
+  }
+}
+
+// 2. DENTISTA FOFINHO
+function setupDentistGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🦷</span><span>🪥</span><span>✨</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Vamos escovar os dentes do ' + petsNames[currentPetIndex] + '? 🪥';
+  
+  area.innerHTML = `
+    <div style="font-size:6em;text-align:center;margin-top:20px">${petsList[currentPetIndex]}</div>
+    <div style="background:#fff;border:4px solid #4cc9f0;border-radius:20px;padding:15px;margin:10px;text-align:center;width:85%">
+      <p style="font-size:1.2em;color:#333">🦷 🦷 🦷 🦷</p>
+      <p id="tooth-status" style="font-size:0.9em;color:#ff4d6d;margin-top:8px">Tem um docinho grudado no dente!</p>
+    </div>
+  `;
+
+  shelf.innerHTML = `
+    <div class="tool now" onclick="cleanTooth(1)">🪥</div>
+    <div class="tool" onclick="cleanTooth(2)">✨</div>
+  `;
+}
+
+let toothCleaned = 0;
+function cleanTooth(toolId) {
+  playPop();
+  const status = document.getElementById('tooth-status');
+  const steps = document.querySelectorAll('#game-steps span');
+  if (toolId === 1) {
+    toothCleaned++;
+    if (toothCleaned === 1) {
+      status.textContent = 'Dentes escovados com capricho! Agora passe o brilho ✨';
+      steps[0].classList.replace('now', 'done');
+      steps[1].classList.add('now');
+    }
+  } else if (toolId === 2) {
+    status.textContent = 'Sorriso brilhante e saudável! 😄';
+    steps[1].classList.replace('now', 'done');
+    steps[2].classList.add('now');
+    showYay();
+  }
+}
+
+// 3. SPA RELAXANTE
+function setupSpaGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🥒</span><span>✨</span><span>💖</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Coloque rodelas de pepino nos olhos para relaxar 🥒';
+  
+  area.innerHTML = `
+    <div id="spa-pet" style="font-size:6em;text-align:center;margin-top:30px;position:relative">
+      ${petsList[currentPetIndex]}
+      <div id="cucumber1" style="position:absolute;top:35px;left:35%;font-size:0.5em;display:none">🥒</div>
+      <div id="cucumber2" style="position:absolute;top:35px;right:35%;font-size:0.5em;display:none">🥒</div>
+    </div>
+    <p id="spa-msg" style="color:#2a9d8f;font-weight:bold;margin-top:15px">Momento de paz e beleza</p>
+  `;
+
+  shelf.innerHTML = `
+    <div class="tool now" onclick="spaStep(1)">🥒</div>
+    <div class="tool" onclick="spaStep(2)">💆‍♀️</div>
+  `;
+}
+
+let spaStepCount = 0;
+function spaStep(sId) {
+  playPop();
+  const steps = document.querySelectorAll('#game-steps span');
+  if (sId === 1) {
+    document.getElementById('cucumber1').style.display = 'block';
+    document.getElementById('cucumber2').style.display = 'block';
+    document.getElementById('spa-msg').textContent = 'Massagem relaxante com pedras quentes! 💆‍♀️';
+    steps[0].classList.replace('now', 'done');
+    steps[1].classList.add('now');
+    spaStepCount = 1;
+  } else if (sId === 2 && spaStepCount === 1) {
+    steps[1].classList.replace('now', 'done');
+    steps[2].classList.add('now');
+    document.getElementById('spa-msg').textContent = 'Que pet relaxado e feliz! ✨';
+    showYay();
+  }
+}
+
+// 4. MÉDICO PET
+function setupDoctorGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🌡️</span><span>🩹</span><span>💖</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Meça a temperatura do pet com o termômetro 🌡️';
+  
+  area.innerHTML = `
+    <div style="font-size:6em;text-align:center;margin-top:20px">${petsList[currentPetIndex]}</div>
+    <div id="doc-status" style="background:#fff;border:3px solid #ff758f;padding:12px 20px;border-radius:20px;margin-top:15px;color:#e75480;font-weight:bold">
+      Precisamos colocar um curativo na marquinha! 🩹
+    </div>
+  `;
+
+  shelf.innerHTML = `
+    <div class="tool now" onclick="docStep(1)">🌡️</div>
+    <div class="tool" onclick="docStep(2)">🩹</div>
+  `;
+}
+
+function docStep(dId) {
+  playPop();
+  const status = document.getElementById('doc-status');
+  const steps = document.querySelectorAll('#game-steps span');
+  if (dId === 1) {
+    status.textContent = 'Temperatura perfeita! 37°C ❤️';
+    steps[0].classList.replace('now', 'done');
+    steps[1].classList.add('now');
+  } else if (dId === 2) {
+    status.textContent = 'Curativo aplicado com carinho! 🩹✨';
+    steps[1].classList.replace('now', 'done');
+    steps[2].classList.add('now');
+    showYay();
+  }
+}
+
+// 5. VESTIR & ACESSÓRIOS
+function setupDressupGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>👑</span><span>👓</span><span>🎀</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Escolha um chapéu ou acessório bem legal!';
+
+  area.innerHTML = `
+    <div style="position:relative;font-size:6em;text-align:center;margin-top:20px">
+      <div id="dress-item" style="position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-size:0.8em">👑</div>
+      ${petsList[currentPetIndex]}
+    </div>
+    <div style="display:flex;gap:15px;margin-top:20px">
+      <button onclick="changeAccessory('👑')" style="font-size:2em;background:#fff;border:3px solid #ffd166;border-radius:16px;padding:8px 16px;cursor:pointer">👑</button>
+      <button onclick="changeAccessory('🎩')" style="font-size:2em;background:#fff;border:3px solid #4cc9f0;border-radius:16px;padding:8px 16px;cursor:pointer">🎩</button>
+      <button onclick="changeAccessory('🎀')" style="font-size:2em;background:#fff;border:3px solid #ff758f;border-radius:16px;padding:8px 16px;cursor:pointer">🎀</button>
+      <button onclick="changeAccessory('👓')" style="font-size:2em;background:#fff;border:3px solid #7ed957;border-radius:16px;padding:8px 16px;cursor:pointer">👓</button>
+    </div>
+  `;
+
+  shelf.innerHTML = `
+    <div class="tool now" onclick="showYay()">✨</div>
+  `;
+}
+
+function changeAccessory(acc) {
+  playPop();
+  document.getElementById('dress-item').textContent = acc;
+}
+
+// 6. LIVRO DE COLORIR
+function setupColorGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🎨</span><span>🖌️</span><span>✨</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Escolha uma cor e pinte o desenho do pet! 🎨';
+
+  area.innerHTML = `
+    <div id="color-canvas" style="width:220px;height:220px;background:#fff;border:5px solid #ff758f;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:6em;box-shadow:0 8px 20px rgba(0,0,0,0.1);cursor:pointer" onclick="paintPetColor()">
+      ${petsList[currentPetIndex]}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:15px">
+      <div style="width:35px;height:35px;background:#ff4d6d;border-radius:50%;cursor:pointer;border:3px solid #fff" onclick="selectColor('#ff4d6d')"></div>
+      <div style="width:35px;height:35px;background:#4cc9f0;border-radius:50%;cursor:pointer;border:3px solid #fff" onclick="selectColor('#4cc9f0')"></div>
+      <div style="width:35px;height:35px;background:#ffd166;border-radius:50%;cursor:pointer;border:3px solid #fff" onclick="selectColor('#ffd166')"></div>
+      <div style="width:35px;height:35px;background:#7ed957;border-radius:50%;cursor:pointer;border:3px solid #fff" onclick="selectColor('#7ed957')"></div>
+      <div style="width:35px;height:35px;background:#9b5de5;border-radius:50%;cursor:pointer;border:3px solid #fff" onclick="selectColor('#9b5de5')"></div>
+    </div>
+  `;
+
+  shelf.innerHTML = `<div class="tool now" onclick="showYay()">✔️ Concluir</div>`;
+}
+
+let currentColor = '#ff4d6d';
+function selectColor(c) {
+  playPop();
+  currentColor = c;
+  document.getElementById('color-canvas').style.borderColor = c;
+}
+
+function paintPetColor() {
+  playPop();
+  document.getElementById('color-canvas').style.backgroundColor = currentColor + '33';
+}
+
+// 7. BOA NOITE
+function setupSleepGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🌙</span><span>🛏️</span><span>💤</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Coloque o pet na caminha e cubra com a cobertinha 🛏️';
+
+  area.innerHTML = `
+    <div style="font-size:5em;margin-top:30px">🛌</div>
+    <div style="font-size:4em;margin-top:-20px">${petsList[currentPetIndex]}</div>
+    <p style="color:#4a4e69;font-weight:bold;margin-top:10px">Zzz... Hora de dormir dodói! 🌙</p>
+  `;
+
+  shelf.innerHTML = `<div class="tool now" onclick="showYay()">💤</div>`;
+}
+
+// 8. COMIDINHAS & SNACKS
+function setupKitchenGame(area, shelf, stepsBar, hint) {
+  stepsBar.innerHTML = '<span>🍪</span><span>🥛</span><span>💖</span>'.split('').map((s,i)=>`<span class="${i===0?'now':''}">${s}</span>`).join('');
+  hint.textContent = 'Dê um biscoitinho saboroso para o pet!';
+
+  area.innerHTML = `
+    <div style="font-size:6em;text-align:center;margin-top:20px">${petsList[currentPetIndex]}</div>
+    <div style="font-size:3em;margin-top:10px">🦴 🍪 🥛</div>
+    <p style="color:#e75480;font-weight:bold;margin-top:10px">Nhoc nhoc! Que delícia!</p>
+  `;
+
+  shelf.innerHTML = `<div class="tool now" onclick="showYay()">✨</div>`;
+}
+
+function nextActivityOrMenu() {
+  hideYay();
+  goMenu();
+}
 </script>
 </body>
 </html>
